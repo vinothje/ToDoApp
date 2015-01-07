@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -24,19 +25,37 @@ public class ToDoActivity extends ActionBarActivity {
     private ArrayList<String> todoitems;
     private ArrayAdapter<String> todoAdapter;
     private ListView lvitems;
+    private EditText aditem;
     private EditText etitem;
+    private Button addbutton;
+    private Button editbutton;
+    private Integer itempos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_to_do);
         lvitems = (ListView) findViewById(R.id.listView);
+        aditem = (EditText) findViewById(R.id.addText);
         etitem = (EditText) findViewById(R.id.editText);
+        addbutton = (Button) findViewById(R.id.addButton);
+        editbutton = (Button) findViewById(R.id.editButton);
         readItems();
         todoAdapter = new ArrayAdapter<String>(getBaseContext(),
                       android.R.layout.simple_list_item_1, todoitems);
         lvitems.setAdapter(todoAdapter);
         setupListViewListener();
+        setupSingleClickViewListener();
+    }
+
+    private void setupSingleClickViewListener() {
+        lvitems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View item, int pos, long id) {
+                etitem.setText(todoitems.get(pos));
+                itempos = pos;
+            }
+        });
     }
 
     private void setupListViewListener() {
@@ -51,10 +70,17 @@ public class ToDoActivity extends ActionBarActivity {
     }
 
     public void onAddItem(View v) {
-        String item = etitem.getText().toString();
+        String item = aditem.getText().toString();
         todoAdapter.add(item);
-        etitem.setText("");
+        aditem.setText("");
         writeItems();
+    }
+
+    public void onEditItem(View v) {
+        String item = etitem.getText().toString();
+        todoitems.set(itempos, item);
+        todoAdapter.notifyDataSetChanged();
+        etitem.setText("");
     }
 
     private void readItems() {
