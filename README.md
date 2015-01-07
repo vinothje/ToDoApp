@@ -1,6 +1,11 @@
 ToDoApp
 =======
-I have now completed the edit feature by adding a new textbox and Edit Button. I am facing some issues in pushing the latest changes to Github. So i am pasting the Activity Java file below. Please review. I have also added the gif explaining the workflow of the app.
+I have now completed the edit feature by adding a new textbox and Edit Button. 
+Description :
+       I have added a EditText box and a Button to edit the item. The action is single click on the list item. When an item from the itemlist is single clicked, the item will be displayed in the EditText box. User can edit the item and clicking the Edit Button will save the item to the itemlist.
+       I added the onclick event on the itemlist inline in activity java class.
+
+I am facing some issues in pushing the latest changes to Github. So i am pasting the Activity Java file below. Please review. I have also added the gif explaining the workflow of the app.
 
 package com.example.vijeevan.todoapp;
 
