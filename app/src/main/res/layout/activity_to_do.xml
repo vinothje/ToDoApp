@@ -11,33 +11,11 @@
         android:text="Add"
         android:id="@+id/addButton"
         android:onClick="onAddItem"
-        android:layout_marginBottom="45dp"
-        android:layout_above="@+id/editButton"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:layout_marginRight="33dp"
-        android:layout_marginEnd="33dp" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Edit"
-        android:id="@+id/editButton"
-        android:onClick="onEditItem"
-        android:layout_alignParentBottom="true"
-        android:layout_alignLeft="@+id/addButton"
-        android:layout_alignStart="@+id/addButton" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:editable="true"
-        android:hint="Edit the Item"
-        android:inputType="text"
-        android:layout_below="@+id/addButton"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_marginEnd="33dp"
+        android:layout_alignBottom="@+id/addText"
+        android:layout_alignRight="@+id/listView"
+        android:layout_alignEnd="@+id/listView" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -45,9 +23,12 @@
         android:id="@+id/addText"
         android:editable="true"
         android:hint="Add an Item"
-        android:layout_alignTop="@+id/addButton"
-        android:layout_alignRight="@+id/editText"
-        android:layout_alignEnd="@+id/editText" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="31dp"
+        android:layout_marginStart="31dp"
+        android:layout_marginBottom="31dp" />
 
     <ListView
         android:layout_width="wrap_content"

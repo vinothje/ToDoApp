@@ -1,7 +1,9 @@
 package com.example.vijeevan.todoapp;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,10 +28,10 @@ public class ToDoActivity extends ActionBarActivity {
     private ArrayAdapter<String> todoAdapter;
     private ListView lvitems;
     private EditText aditem;
-    private EditText etitem;
-    private Button addbutton;
-    private Button editbutton;
     private Integer itempos;
+    private String item;
+    private Integer posn;
+    private final int REQUEST_CODE = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,25 +39,35 @@ public class ToDoActivity extends ActionBarActivity {
         setContentView(R.layout.activity_to_do);
         lvitems = (ListView) findViewById(R.id.listView);
         aditem = (EditText) findViewById(R.id.addText);
-        etitem = (EditText) findViewById(R.id.editText);
-        addbutton = (Button) findViewById(R.id.addButton);
-        editbutton = (Button) findViewById(R.id.editButton);
         readItems();
         todoAdapter = new ArrayAdapter<String>(getBaseContext(),
                       android.R.layout.simple_list_item_1, todoitems);
         lvitems.setAdapter(todoAdapter);
         setupListViewListener();
-        setupSingleClickViewListener();
+        setupEditItemListener();
     }
 
-    private void setupSingleClickViewListener() {
+    private void setupEditItemListener() {
         lvitems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapter, View item, int pos, long id) {
-                etitem.setText(todoitems.get(pos));
-                itempos = pos;
+            public void onItemClick(AdapterView<?> adapter, View view, int pos, long id) {
+                item = todoitems.get(pos);
+                Intent i = new Intent(ToDoActivity.this, EditListActivity.class);
+                i.putExtra("pos", pos);
+                i.putExtra("item", item);
+                startActivityForResult(i, REQUEST_CODE);
             }
         });
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.v("some4", "resulting");
+        item = data.getExtras().getString("item");
+        posn = data.getExtras().getInt("pos");
+        Log.v("some5", "item:" + item + " pos:" + posn);
+        todoitems.set(posn, item);
+        todoAdapter.notifyDataSetChanged();
+        writeItems();
     }
 
     private void setupListViewListener() {
@@ -74,13 +86,6 @@ public class ToDoActivity extends ActionBarActivity {
         todoAdapter.add(item);
         aditem.setText("");
         writeItems();
-    }
-
-    public void onEditItem(View v) {
-        String item = etitem.getText().toString();
-        todoitems.set(itempos, item);
-        todoAdapter.notifyDataSetChanged();
-        etitem.setText("");
     }
 
     private void readItems() {
