@@ -9,18 +9,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class ToDoActivity extends ActionBarActivity {
@@ -30,8 +29,10 @@ public class ToDoActivity extends ActionBarActivity {
     private EditText aditem;
     private Integer itempos;
     private String item;
+    private Long id;
     private Integer posn;
     private final int REQUEST_CODE = 20;
+    TodoItemDatabase db = new TodoItemDatabase(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +40,10 @@ public class ToDoActivity extends ActionBarActivity {
         setContentView(R.layout.activity_to_do);
         lvitems = (ListView) findViewById(R.id.listView);
         aditem = (EditText) findViewById(R.id.addText);
+
         readItems();
         todoAdapter = new ArrayAdapter<String>(getBaseContext(),
-                      android.R.layout.simple_list_item_1, todoitems);
+                      android.R.layout.simple_list_item_1,todoitems);
         lvitems.setAdapter(todoAdapter);
         setupListViewListener();
         setupEditItemListener();
@@ -52,9 +54,11 @@ public class ToDoActivity extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int pos, long id) {
                 item = todoitems.get(pos);
+                posn = pos;
                 Intent i = new Intent(ToDoActivity.this, EditListActivity.class);
-                i.putExtra("pos", pos);
+                i.putExtra("id", id);
                 i.putExtra("item", item);
+                Log.v("edit", "id = " + id);
                 startActivityForResult(i, REQUEST_CODE);
             }
         });
@@ -63,11 +67,15 @@ public class ToDoActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.v("some4", "resulting");
         item = data.getExtras().getString("item");
-        posn = data.getExtras().getInt("pos");
-        Log.v("some5", "item:" + item + " pos:" + posn);
+        id = data.getExtras().getLong("id");
+        id = id + 1;
+        Log.v("some5", "item:" + item + " pos:" + id);
+        TodoItem item_obj = new TodoItem(item);
+        item_obj.setId((int) (long) id);
+        item_obj.setItem(item);
+        db.updateTodoItem(item_obj);
         todoitems.set(posn, item);
         todoAdapter.notifyDataSetChanged();
-        writeItems();
     }
 
     private void setupListViewListener() {
@@ -85,22 +93,16 @@ public class ToDoActivity extends ActionBarActivity {
         String item = aditem.getText().toString();
         todoAdapter.add(item);
         aditem.setText("");
-        writeItems();
+        db.addTodoItem(new TodoItem(item));
     }
 
     private void readItems() {
-        File fh = getFilesDir();
-        File filelist = new File(fh, "todo.txt");
-        try {
-            BufferedReader br= new BufferedReader(new FileReader(filelist));
-            String line = null;
-            todoitems = new ArrayList<String>();
-            while ((line = br.readLine()) != null) {
-                todoitems.add(line);
-            }
-            br.close();
-        } catch(Exception e) {
-            todoitems = new ArrayList<String>();
+        List<TodoItem> todoitemlist = new ArrayList<TodoItem>();
+        todoitems = new ArrayList<String>();
+        TodoItemDatabase db = new TodoItemDatabase(this);
+        todoitemlist = db.getAllTodoItems();
+        for(TodoItem t: todoitemlist) {
+            todoitems.add(t.getItem());
         }
     }
 
@@ -141,3 +143,4 @@ public class ToDoActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+

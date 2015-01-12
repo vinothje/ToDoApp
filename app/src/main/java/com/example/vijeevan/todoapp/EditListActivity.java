@@ -22,7 +22,7 @@ public class EditListActivity extends ActionBarActivity {
     private final int RESULT_OK = 20;
     private ArrayList<String> todoitems;
     private String item;
-    private Integer pos;
+    private Long pos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,7 @@ public class EditListActivity extends ActionBarActivity {
         setContentView(R.layout.activity_edit_list);
 
         item = getIntent().getStringExtra("item");
-        pos = getIntent().getIntExtra("pos",0);
+        pos = getIntent().getLongExtra("id",0);
         etitem = (EditText) findViewById(R.id.editText);
         etitem.setText(item);
     }
@@ -39,7 +39,7 @@ public class EditListActivity extends ActionBarActivity {
         etitem = (EditText) findViewById(R.id.editText);
         Intent data = new Intent();
         data.putExtra("item",etitem.getText().toString());
-        data.putExtra("pos", pos);
+        data.putExtra("id", pos);
         setResult(RESULT_OK, data);
         finish();
     }
