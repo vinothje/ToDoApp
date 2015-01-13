@@ -1,6 +1,8 @@
 package com.example.vijeevan.todoapp;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,8 +29,10 @@ public class ToDoActivity extends ActionBarActivity {
     private ArrayAdapter<String> todoAdapter;
     private ListView lvitems;
     private EditText aditem;
+    private EditText addate;
     private Integer itempos;
     private String item;
+    private String cdate;
     private Long id;
     private Integer posn;
     private final int REQUEST_CODE = 20;
@@ -40,11 +44,22 @@ public class ToDoActivity extends ActionBarActivity {
         setContentView(R.layout.activity_to_do);
         lvitems = (ListView) findViewById(R.id.listView);
         aditem = (EditText) findViewById(R.id.addText);
+        addate = (EditText) findViewById(R.id.addDate);
 
-        readItems();
-        todoAdapter = new ArrayAdapter<String>(getBaseContext(),
-                      android.R.layout.simple_list_item_1,todoitems);
+        // TodoDatabaseHandler is a SQLiteOpenHelper class connecting to SQLite
+        TodoItemDatabase handler = new TodoItemDatabase(this);
+        // Get access to the underlying writeable database
+        SQLiteDatabase db1 = handler.getWritableDatabase();
+        handler.onUpgrade(db1, 0, 1);
+
+        // Query for items from the database and get a cursor back
+        Cursor todoCursor = db1.rawQuery("SELECT  * FROM todo_items", null);
+
+        // Setup cursor adapter using cursor from last step
+        TodoCursorAdapter todoAdapter = new TodoCursorAdapter(this, todoCursor);
+        // Attach cursor adapter to the ListView
         lvitems.setAdapter(todoAdapter);
+
         setupListViewListener();
         setupEditItemListener();
     }
@@ -67,10 +82,11 @@ public class ToDoActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.v("some4", "resulting");
         item = data.getExtras().getString("item");
+        cdate = data.getExtras().getString("cdate");
         id = data.getExtras().getLong("id");
         id = id + 1;
         Log.v("some5", "item:" + item + " pos:" + id);
-        TodoItem item_obj = new TodoItem(item);
+        TodoItem item_obj = new TodoItem(item, cdate);
         item_obj.setId((int) (long) id);
         item_obj.setItem(item);
         db.updateTodoItem(item_obj);
@@ -91,9 +107,21 @@ public class ToDoActivity extends ActionBarActivity {
 
     public void onAddItem(View v) {
         String item = aditem.getText().toString();
-        todoAdapter.add(item);
+        String cdate = addate.getText().toString();
         aditem.setText("");
-        db.addTodoItem(new TodoItem(item));
+        addate.setText("");
+        db.addTodoItem(new TodoItem(item, cdate));
+
+        // Query for items from the database and get a cursor back
+        TodoItemDatabase handler = new TodoItemDatabase(this);
+        // Get access to the underlying writeable database
+        SQLiteDatabase db1 = handler.getWritableDatabase();
+        Cursor todoCursor = db1.rawQuery("SELECT  * FROM todo_items", null);
+
+        // Setup cursor adapter using cursor from last step
+        TodoCursorAdapter todoAdapter_new = new TodoCursorAdapter(this, todoCursor);
+        // Attach cursor adapter to the ListView
+        lvitems.setAdapter(todoAdapter_new);
     }
 
     private void readItems() {

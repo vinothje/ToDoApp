@@ -11,11 +11,8 @@
         android:text="Add"
         android:id="@+id/addButton"
         android:onClick="onAddItem"
-        android:layout_marginRight="33dp"
-        android:layout_marginEnd="33dp"
-        android:layout_alignBottom="@+id/addText"
-        android:layout_alignRight="@+id/listView"
-        android:layout_alignEnd="@+id/listView" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -23,12 +20,10 @@
         android:id="@+id/addText"
         android:editable="true"
         android:hint="Add an Item"
+        android:layout_marginBottom="65dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="31dp"
-        android:layout_marginStart="31dp"
-        android:layout_marginBottom="31dp" />
+        android:layout_alignParentStart="true" />
 
     <ListView
         android:layout_width="wrap_content"
@@ -36,8 +31,19 @@
         android:id="@+id/listView"
         android:layout_alignLeft="@+id/addText"
         android:layout_alignStart="@+id/addText"
-        android:layout_above="@+id/addButton"
         android:fastScrollEnabled="true"
-        android:fastScrollAlwaysVisible="true" />
+        android:fastScrollAlwaysVisible="true"
+        android:layout_above="@+id/addText" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="date"
+        android:ems="10"
+        android:id="@+id/addDate"
+        android:hint="Completion Date"
+        android:layout_below="@+id/listView"
+        android:layout_alignLeft="@+id/addButton"
+        android:layout_alignStart="@+id/addButton" />
 
 </RelativeLayout>

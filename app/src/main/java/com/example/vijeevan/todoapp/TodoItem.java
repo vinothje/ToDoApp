@@ -6,10 +6,12 @@ package com.example.vijeevan.todoapp;
 public class TodoItem {
     private int id;
     private String item;
+    private String cdate;
 
-    public TodoItem(String item) {
+    public TodoItem(String item, String cdate) {
         super();
         this.item = item;
+        this.cdate = cdate;
     }
 
     public String getItem() {
@@ -27,4 +29,8 @@ public class TodoItem {
     public void setId(int id) {
         this.id = id;
     }
+
+    public String getCdate() { return cdate; }
+
+    public void setCdate(String cdate) { this.cdate = cdate; }
 }
