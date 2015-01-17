@@ -52,7 +52,7 @@ public class ToDoActivity extends ActionBarActivity {
         TodoItemDatabase handler = new TodoItemDatabase(this);
         // Get access to the underlying writeable database
         SQLiteDatabase db1 = handler.getWritableDatabase();
-        handler.onUpgrade(db1, 0, 1);
+        //handler.onUpgrade(db1, 0, 1);
 
         // Query for items from the database and get a cursor back
         Cursor todoCursor = db1.rawQuery("SELECT  * FROM todo_items", null);
