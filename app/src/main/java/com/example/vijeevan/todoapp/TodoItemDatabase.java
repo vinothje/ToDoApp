@@ -109,6 +109,7 @@ public class TodoItemDatabase extends SQLiteOpenHelper {
         // Setup fields to update
         ContentValues values = new ContentValues();
         values.put(KEY_ITEM, item.getItem());
+        values.put(KEY_CDATE, item.getCdate());
         // Updating row
         int result = db.update(TABLE_TODO, values, KEY_ID + " = ?",
                 new String[] { String.valueOf(item.getId()) });

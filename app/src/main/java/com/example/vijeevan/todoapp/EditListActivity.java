@@ -1,6 +1,7 @@
 package com.example.vijeevan.todoapp;
 
 import android.content.Intent;
+import android.preference.EditTextPreference;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,10 +20,12 @@ import java.util.ArrayList;
 
 public class EditListActivity extends ActionBarActivity {
     private EditText etitem;
+    private EditText etdate;
     private final int RESULT_OK = 20;
     private ArrayList<String> todoitems;
     private String item;
     private Long pos;
+    private String cdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,16 +33,21 @@ public class EditListActivity extends ActionBarActivity {
         setContentView(R.layout.activity_edit_list);
 
         item = getIntent().getStringExtra("item");
-        pos = getIntent().getLongExtra("id",0);
+        pos = getIntent().getLongExtra("id", 0);
+        cdate = getIntent().getStringExtra("cdate");
         etitem = (EditText) findViewById(R.id.editText);
+        etdate = (EditText) findViewById(R.id.editDate);
         etitem.setText(item);
+        etdate.setText(cdate);
     }
 
     public void onEditItem(View v) {
         etitem = (EditText) findViewById(R.id.editText);
+        etdate = (EditText) findViewById(R.id.editDate);
         Intent data = new Intent();
         data.putExtra("item",etitem.getText().toString());
         data.putExtra("id", pos);
+        data.putExtra("cdate", etdate.getText().toString());
         setResult(RESULT_OK, data);
         finish();
     }

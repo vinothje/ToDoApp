@@ -1,6 +1,7 @@
 package com.example.vijeevan.todoapp;
 
 import android.content.Intent;
+import android.database.CharArrayBuffer;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBarActivity;
@@ -11,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -68,11 +70,26 @@ public class ToDoActivity extends ActionBarActivity {
         lvitems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapter, View view, int pos, long id) {
-                item = todoitems.get(pos);
+                SQLiteDatabase db1 = db.getWritableDatabase();
+                Cursor record = db1.rawQuery("SELECT  * FROM todo_items", null);
+                int ind = 0;
+                if(record.getCount()!=0){
+                    if(record.moveToFirst()){
+                        do{
+                            if(ind == pos) {
+                                item = record.getString(record.getColumnIndex("item"));
+                                cdate = record.getString(record.getColumnIndex("cdate"));
+                            }
+                            ind++;
+                        }while(record.moveToNext());
+                    }
+                    record.close();
+                }
                 posn = pos;
                 Intent i = new Intent(ToDoActivity.this, EditListActivity.class);
                 i.putExtra("id", id);
                 i.putExtra("item", item);
+                i.putExtra("cdate", cdate);
                 Log.v("edit", "id = " + id);
                 startActivityForResult(i, REQUEST_CODE);
             }
@@ -84,14 +101,17 @@ public class ToDoActivity extends ActionBarActivity {
         item = data.getExtras().getString("item");
         cdate = data.getExtras().getString("cdate");
         id = data.getExtras().getLong("id");
-        id = id + 1;
-        Log.v("some5", "item:" + item + " pos:" + id);
+        //id = id + 1;
+        Log.v("some5", "item:" + item + " date:" + cdate + " pos:" + id);
         TodoItem item_obj = new TodoItem(item, cdate);
         item_obj.setId((int) (long) id);
         item_obj.setItem(item);
+        item_obj.setCdate(cdate);
         db.updateTodoItem(item_obj);
-        todoitems.set(posn, item);
-        todoAdapter.notifyDataSetChanged();
+        SQLiteDatabase db1 = db.getWritableDatabase();
+        Cursor todoCursor = db1.rawQuery("SELECT  * FROM todo_items", null);
+        TodoCursorAdapter todoAdapter = new TodoCursorAdapter(this, todoCursor);
+        lvitems.setAdapter(todoAdapter);
     }
 
     private void setupListViewListener() {
